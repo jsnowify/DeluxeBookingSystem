@@ -84,26 +84,36 @@ public class SeatReservation extends JFrame {
 
     private void onContinue() {
         String seat = gridPanel.getSelectedSeat();
-        PaymentDialog pay = new PaymentDialog(this, flight.getPrice(), seat);
-        pay.setVisible(true);
+    PaymentDialog pay = new PaymentDialog(this, flight.getPrice(), seat);
+    pay.setVisible(true);
 
-        if (!pay.isPaid()) return;
+    if (!pay.isPaid()) return;
 
-        // Mark reserved
-        JButton btn = gridPanel.getSelectedButton();
-        btn.setBackground(Color.RED);
-        btn.setEnabled(false);
+    // Mark reserved
+    JButton btn = gridPanel.getSelectedButton();
+    btn.setBackground(Color.RED);
+    btn.setEnabled(false);
 
-        JOptionPane.showMessageDialog(
-            this,
-            "✅ Booking confirmed!\n" +
-            "Flight: " + flight.getFlightNumber() + "\n" +
-            "Seat:   " + seat + "\n" +
-            "Paid:   " + flight.getPrice()
-        );
+    // --- START: Add this code to update seat availability ---
+    String flightNumber = flight.getFlightNumber(); // Get the flight number
+    if (SearchFlight.seatAvailabilityMap.containsKey(flightNumber)) {
+        int currentSeats = SearchFlight.seatAvailabilityMap.get(flightNumber);
+        if (currentSeats > 0) {
+            SearchFlight.seatAvailabilityMap.put(flightNumber, currentSeats - 1);
+        }
+    }
+    // --- END: Added code ---
 
-        // Enable waiting list if all booked
-        joinListButton.setEnabled(!gridPanel.hasAvailableSeats());
+    JOptionPane.showMessageDialog(
+        this,
+        "✅ Booking confirmed!\n" +
+        "Flight: " + flight.getFlightNumber() + "\n" +
+        "Seat:   " + seat + "\n" +
+        "Paid:   " + flight.getPrice()
+    );
+
+    // Enable waiting list if all booked
+    joinListButton.setEnabled(!gridPanel.hasAvailableSeats());
     }
 
     private void onJoinWaitingList() {

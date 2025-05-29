@@ -16,8 +16,7 @@ import javax.swing.table.DefaultTableModel;
  */
     public class SearchFlight extends javax.swing.JFrame {
     private final List<Flight> flights = new ArrayList<>();
-    private final Map<String, Integer> seatAvailabilityMap = new HashMap<>();
-
+    public static Map<String, Integer> seatAvailabilityMap = new HashMap<>();
         
     /**
      * Creates new form SearchFlight
