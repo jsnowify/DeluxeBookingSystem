@@ -15,7 +15,7 @@ public class SeatGridPanel extends JPanel {
     /**
      * @param rows     number of seat‐rows (e.g. 5)
      * @param cols     number of seat‐columns (e.g. 5)
-     * @param listener will be called with ActionEvent.getActionCommand()==seatCode
+     * @param listener will receive an ActionEvent with getActionCommand()==seatCode
      */
     public SeatGridPanel(int rows, int cols, ActionListener listener) {
         this.listener = listener;
@@ -35,9 +35,11 @@ public class SeatGridPanel extends JPanel {
                 btn.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
                 if (rand.nextDouble() < UNAVAILABLE_PROB) {
+                    // mark unavailable
                     btn.setBackground(Color.RED);
                     btn.setEnabled(false);
                 } else {
+                    // available
                     btn.setBackground(new Color(102, 255, 102));
                     btn.addActionListener(e -> selectSeat(btn, code));
                 }
@@ -48,14 +50,15 @@ public class SeatGridPanel extends JPanel {
     }
 
     private void selectSeat(JButton btn, String code) {
-
+        // reset old
         if (selectedButton != null) {
             selectedButton.setBackground(new Color(102, 255, 102));
         }
+        // mark new
         selectedButton = btn;
         selectedSeat = code;
         btn.setBackground(Color.YELLOW);
-
+        // notify parent
         listener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, code));
     }
 
@@ -67,5 +70,15 @@ public class SeatGridPanel extends JPanel {
     /** @return the JButton instance for the selected seat */
     public JButton getSelectedButton() {
         return selectedButton;
+    }
+
+    /** @return true if there is at least one enabled (available) seat */
+    public boolean hasAvailableSeats() {
+        for (Component c : getComponents()) {
+            if (c instanceof JButton && c.isEnabled()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

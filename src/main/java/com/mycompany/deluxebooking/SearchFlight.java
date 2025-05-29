@@ -3,18 +3,21 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package com.mycompany.deluxebooking;
-
+import com.mycompany.deluxebooking.SeatReservation;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-
 /**
  *
  * @author joshu
  */
     public class SearchFlight extends javax.swing.JFrame {
-    private final List<Flight> flights = new ArrayList<>();  
+    private final List<Flight> flights = new ArrayList<>();
+    private final Map<String, Integer> seatAvailabilityMap = new HashMap<>();
+
         
     /**
      * Creates new form SearchFlight
@@ -67,6 +70,12 @@ import javax.swing.table.DefaultTableModel;
         flights.add(new Flight("Claude Aviation", "CA303", "Tokyo, Japan", "Kyoto, Japan", "1:00 AM", "3:20 AM", "₱4,200"));
         flights.add(new Flight("Esmeralda Airlines", "EA403", "Tokyo, Japan", "Kyoto, Japan", "1:00 AM", "3:50 AM", "₱4,800"));
         flights.add(new Flight("Freya Airways", "FA503", "Tokyo, Japan", "Kyoto, Japan", "1:00 AM", "3:40 AM", "₱4,600"));
+        flights.add(new Flight("Freya Airways", "FA502", "Boracay, Philippines", "Davao, Philippines", "8:45 AM", "11:20 AM", "₱3,500"));
+        flights.add(new Flight("Aamon Airline", "AA101", "Tokyo, Japan", "Fukuoka, Japan", "12:00 AM", "3:00 AM", "₱3,300"));
+        
+        for (Flight flight : flights) {
+            seatAvailabilityMap.put(flight.getFlightNumber(), 25); 
+        }
     }
 
     
@@ -172,13 +181,13 @@ import javax.swing.table.DefaultTableModel;
         flightListTable.setFont(new java.awt.Font("Inter 24pt Light", 0, 12)); // NOI18N
         flightListTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Airline", "Flight", "From", "To", "Departure", "Arrival", "Price"
+                "Airline", "Flight", "From", "To", "Departure", "Arrival", "Price", "Seats"
             }
         ));
         jScrollPane1.setViewportView(flightListTable);
@@ -326,7 +335,9 @@ import javax.swing.table.DefaultTableModel;
                 model.addRow(new Object[]{
                     flight.getAirline(), flight.getFlightNumber(),
                     flight.getFrom(), flight.getTo(),
-                    flight.getDepartureTime(), flight.getArrivalTime(),flight.getPrice()
+                    flight.getDepartureTime(), flight.getArrivalTime(),
+                    flight.getPrice(),
+                    seatAvailabilityMap.get(flight.getFlightNumber()) + " seats"
                 });
 
                 flightFound = true;
@@ -342,34 +353,33 @@ import javax.swing.table.DefaultTableModel;
     }//GEN-LAST:event_searchFlightButtonActionPerformed
 
     private void continueBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_continueBtnActionPerformed
-        // TODO add your handling code here:
-                 
-     int selectedRow = flightListTable.getSelectedRow();
-    if (selectedRow != -1 && flightListTable.getValueAt(selectedRow, 0) != null) {
-        String airline     = flightListTable.getValueAt(selectedRow, 0).toString();
-        String flightNum   = flightListTable.getValueAt(selectedRow, 1).toString();
-        String from        = flightListTable.getValueAt(selectedRow, 2).toString();
-        String to          = flightListTable.getValueAt(selectedRow, 3).toString();
-        String departure   = flightListTable.getValueAt(selectedRow, 4).toString();
-        String arrival     = flightListTable.getValueAt(selectedRow, 5).toString();
-        String price       = flightListTable.getValueAt(selectedRow, 6).toString();
+         int selectedRow = flightListTable.getSelectedRow();
+         if (selectedRow != -1 && flightListTable.getValueAt(selectedRow, 0) != null) {
+             String airline   = flightListTable.getValueAt(selectedRow, 0).toString();
+             String flightNum = flightListTable.getValueAt(selectedRow, 1).toString();
+             String from      = flightListTable.getValueAt(selectedRow, 2).toString();
+             String to        = flightListTable.getValueAt(selectedRow, 3).toString();
+             String departure = flightListTable.getValueAt(selectedRow, 4).toString();
+             String arrival   = flightListTable.getValueAt(selectedRow, 5).toString();
+             String price     = flightListTable.getValueAt(selectedRow, 6).toString();
 
-        Flight selectedFlight = new Flight(
-            airline, flightNum, from, to, departure, arrival, price
-        );
+             // build your Flight object
+             Flight selectedFlight = new Flight(
+                 airline, flightNum, from, to, departure, arrival, price
+             );
 
-        // **Use your SeatReservation class, not “Frame”**
-        SeatReservation seatFrame = new SeatReservation(selectedFlight);
-        seatFrame.setVisible(true);
+             // open the reservation window
+             SeatReservation seatFrame = new SeatReservation(selectedFlight);
+             seatFrame.setVisible(true);
 
-        // close the search window
-        this.dispose();
-    } else {
-        JOptionPane.showMessageDialog(
-            this,
-            "Please select a flight from the list."
-        );
-    }
+             // close the search screen
+             this.dispose();
+         } else {
+             JOptionPane.showMessageDialog(
+                 this,
+                 "Please select a flight from the list."
+             );
+         }
     
     }//GEN-LAST:event_continueBtnActionPerformed
 
