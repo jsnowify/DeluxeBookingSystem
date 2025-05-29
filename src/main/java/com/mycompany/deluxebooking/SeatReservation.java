@@ -94,7 +94,7 @@ public class SeatReservation extends JFrame {
     btn.setBackground(Color.RED);
     btn.setEnabled(false);
 
-    // --- START: Add this code to update seat availability ---
+    //  update seat availability
     String flightNumber = flight.getFlightNumber(); // Get the flight number
     if (SearchFlight.seatAvailabilityMap.containsKey(flightNumber)) {
         int currentSeats = SearchFlight.seatAvailabilityMap.get(flightNumber);
@@ -102,7 +102,7 @@ public class SeatReservation extends JFrame {
             SearchFlight.seatAvailabilityMap.put(flightNumber, currentSeats - 1);
         }
     }
-    // --- END: Added code ---
+    //
 
     JOptionPane.showMessageDialog(
         this,
